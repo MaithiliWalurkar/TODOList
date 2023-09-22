@@ -1,0 +1,88 @@
+﻿
+@{
+    ViewBag.Title = "ForgetPass";
+    Layout = null;
+}
+
+<h2>Forget Password</h2>
+
+<center>
+    <form>
+        <table>
+            <tr>
+                <td><label for="txtname">Username :</label></td>
+                <td><input type="text" id="txtname" name="txtname" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" id="btnget" value="Get" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <div id="quediv">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="txtans">Answer :</label></td>
+                <td><input type="text" id="txtans" name="txtans" /></td>
+            </tr>
+            <tr>
+                <td align="center"><a id="lnklog">Login</a></td>
+                <td align="center"><input type="button" id="btnchk" name="btnchk" value="Check" /></td>
+            </tr>
+        </table>
+    </form>
+    <div>
+        <label id="showpass"></label>
+    </div>
+</center>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnget').click(function () {
+            var finddata = {
+                Username: $('#txtname').val()
+            }
+            var RenderData = function (Que) {
+                var strhtml = ' ';
+                strhtml += '<label id="txtque" >' + Que + '</label>';
+                $('#quediv').html(strhtml);
+            }
+            $.ajax({
+                url: '/todo/FindUser',
+                method: 'POST',
+                data: finddata,
+                success: function (data) {
+                    if (data != 0) {
+                        RenderData(data);
+                    }
+                    else 
+                        $('#showpass').text("Enter Correct Username");
+                }
+            })
+        })
+        $('#btnchk').click(function () {
+            var finddata = {
+                Username: $('#txtname').val(),
+                Answers: $('#txtans').val()
+            }
+            $.ajax({
+                url: '/todo/FindUser',
+                method: 'POST',
+                data: finddata,
+                success: function (data) {
+                    if (data == " ") {
+                        $('#showpass').text("Wrong Answer");
+                    }
+                    else
+                        $('#showpass').text("Password = " + data);
+                }
+            })
+        })
+
+        $('#lnklog').click(function () {
+            window.location.href = '/todo/Login';
+        })
+    })
+</script>

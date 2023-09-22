@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewBag.Title = "Registration";
+    Layout = null;
+}
+
+<center>
+    <h2>Registration Page</h2>
+    <form>
+        <table>
+            <tr>
+                <td><label for="txtname">Username :</label></td>
+                <td><input type="text" id="txtname" name="txtname" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtpass">Password :</label></td>
+                <td><input type="password" id="txtpass" name="txtpass" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtcpass">Confirm Password :</label></td>
+                <td><input type="password" id="txtcpass" name="txtcpass" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtmail">Email Id :</label></td>
+                <td><input type="email" id="txtmail" name="txtmail" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtque">Security Questions :</label></td>
+                <td><select id="ddque" name="txtque">Select</select></td>
+            </tr>
+            <tr>
+                <td><label for="txtans">Answer :</label></td>
+                <td><input type="text" id="txtans" name="txtans" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" id="btnregi" name="btnregi" value="Register" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><a id="lnklog">Login</a></td>
+            </tr>
+        </table>
+    </form>
+</center>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/todo/getque',
+            method: 'POST',
+            success: function (data) {
+                $.each(data, function (key, val) {
+                    $('#ddque').append($("<option/>").val(val.QueId).text(val.Questions));
+                })
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+        $('#btnregi').click(function () {
+            if ($('#txtpass').val() == $('#txtcpass').val()) {
+                var udata = {
+                    Username: $('#txtname').val(),
+                    Pass: $('#txtpass').val(),
+                    Email: $('#txtmail').val(),
+                    Queid: $('#ddque').val(),
+                    Answers: $('#txtans').val()
+                }
+                $.ajax({
+                    url: '/todo/PutData',
+                    method: 'POST',
+                    data: udata,
+                    success: function (data) {
+                        if (data === 0)
+                            alert("User Registred");
+                        else if (data === 1)
+                            alert("User Already Exist");
+                        else
+                            alert("Invalid Data");
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                })
+            }
+            else {
+                alert("Password Mismatch");
+            }
+        })
+        $('#lnklog').click(function () {
+            window.location.href = '/todo/Login';
+        })
+    })
+</script>

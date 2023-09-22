@@ -1,0 +1,65 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<center>
+    <h2>Login Page</h2>
+    <form>
+        <table>
+            <tr>
+                <td><label for="txtname">Username :</label></td>
+                <td><input type="text" id="txtname" name="txtname" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtpass">Password :</label></td>
+                <td><input type="password" id="txtpass" name="txtpass" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><input type="button" id="btnlog" name="btnlog" value="Login" /></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center"><a id="lnkRegi">Register Account</a></td>
+            </tr>
+            <tr>
+                <td align="center"><a id="lnkchng">Change Password</a></td>
+                <td align="center"><a id="lnkforg">Forget Password</a></td>
+            </tr>
+        </table>
+    </form>
+</center>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btnlog').click(function () {
+            var udata = {
+                Username: $('#txtname').val(),
+                Pass: $('#txtpass').val()
+            }
+            $.ajax({
+                url: '/todo/LogAccount',
+                method: 'POST',
+                data: udata,
+                success: function (data) {
+                    if (data == 1)
+                        window.location.href = '/todo/UserMain';
+                    else if (data == 11)
+                        window.location.href = '/todo/AdminMain';
+                    else
+                        alert("Login Failed");
+                }
+            })
+        })
+        $('#lnkRegi').click(function () {
+            window.location.href = '/todo/Registration';
+        })
+        $('#lnkchng').click(function () {
+            window.location.href = '/todo/ChangePass';
+        })
+        $('#lnkforg').click(function () {
+            window.location.href = '/todo/ForgetPass';
+        })
+    })
+</script>

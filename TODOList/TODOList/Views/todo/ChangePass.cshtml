@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewBag.Title = "ChangePass";
+    Layout = null;
+}
+
+<center>
+    <h2>Change Password</h2>
+    <form>
+        <table>
+            <tr>
+                <td><label for="txtname">Username :</label></td>
+                <td><input type="text" id="txtname" name="txtname" /></td>
+            </tr>
+            <tr>
+                <td><label for="txtpass"> Old Password :</label></td>
+                <td><input type="password" id="txtpass" name="txtpass" /></td>
+            </tr>
+            <tr>
+                <td align="center"><a id="lnklog">Login</a></td>
+                <td align="center"><input type="button" id="btnchk" name="btnchk" value="Check" /></td>
+            </tr>
+        </table>
+    </form>
+    <div id="Getnew">
+
+    </div>
+    <center>
+        <input type="button" id="btnchng" name="btnchng" value="Change" />
+    </center>
+    <div>
+        <label id="showstatus"></label>
+    </div>
+</center>
+
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#txtname').val(),
+        $('#txtpass').val();
+
+        $('#btnchk').click(function () {
+            var udata = {
+                Username: $('#txtname').val(),
+                Pass: $('#txtpass').val()
+            }
+            var RenderData = function () {
+                var strhtml = ' ';
+                strhtml += '<center><table><tr><td><label for="txtnpass">New Password :</label></td><td><input type="text" id="txtnpass" name="txtnpass" /></td></tr></table></center>'
+                $('#Getnew').html(strhtml);
+            }
+            $.ajax({
+                url: '/todo/LogAccount',
+                method: 'POST',
+                data: udata,
+                success: function (data) {
+                    $('#showstatus').text(" ");
+                    if (data === 1) {
+                        RenderData();
+                    }
+                    else if (data === 11)
+                        alert("You can't change the Password, if you forget password then you can check using forget pass");
+                    else
+                        $('#showstatus').text("Check your Username and Password");
+                }
+            })
+        })
+        $('#lnklog').click(function () {
+            window.location.href = '/todo/Login';
+        })
+        $('#btnchng').click(function () {
+            var udata = {
+                Username: $('#txtname').val(),
+                Pass: $('#txtnpass').val()
+            }
+            $.ajax({
+                url: '/todo/NewPass',
+                method: 'POST',
+                data: udata,
+                success: function (data) {
+                    if (data === 1) {
+                        $('#showstatus').text("Password Changed Successfully");
+                    }
+                    else
+                        $('#showstatus').text("Can't Change your password");
+                }
+            })
+        })
+    })
+</script>

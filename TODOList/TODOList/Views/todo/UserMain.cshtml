@@ -1,0 +1,97 @@
+﻿
+@{
+    ViewBag.Title = "UserMain";
+    Layout = null;
+}
+
+<center>
+    <h2>Users MainPage</h2>
+    <form>
+        <table>
+            <tr>
+                <td><label for="txtcat">Category :</label></td>
+                <td><select id="ddcat" name="txtcat">Select</select></td>
+            </tr>
+            <tr>
+                <td><label for="txttask">Add Task :</label></td>
+                <td><input type="text" id="txttask" name="txttask" /></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="button" id="btnadd" name="btnadd" value="Add" /></td>
+                <td align="center"><input type="button" id="btnshow" name="btnshow" value="Show All Tasks" /></td>
+            </tr>
+            <tr>
+                <td align="center" colspan="2"><a id="lnkchng">Back</a></td>
+            </tr>
+        </table>
+        <div id="tbldis"></div>
+    </form>
+</center>
+
+<script src="~/Scripts/jquery-3.4.1.js"></script>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: '/todo/getCat',
+            method: 'POST',
+            success: function (data) {
+                $.each(data, function (key, val) {
+                    $('#ddcat').append($("<option/>").val(val.CatId).text(val.Category));
+                })
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        })
+        $('#btnadd').click(function () {
+            var udata = {
+                CatId: $('#ddcat').val(),
+                Task: $('#txttask').val(),
+            }
+            $.ajax({
+                url: '/todo/PutTask',
+                method: 'POST',
+                data: udata,
+                success: function (data) {
+                    if (data === 1)
+                        alert("Task Added");
+                    else
+                        alert("Enter Proper Data");
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+            })
+        })
+        $('#btnshow').click(function () {
+            var udata = {
+                CatId: $('#ddcat').val()
+            }
+            var RenderData = function (Get) {
+                var strhtml = ' ';
+                strhtml += '<table border = 1>';
+                strhtml += '<tr>';
+                strhtml += '<th>Task</th>';
+                strhtml += '</tr>';
+                $.each(Get, function (key, val) {
+                    strhtml += '<tr>';
+                    strhtml += '<td>' + val.Task + '</td>';
+                    strhtml += '</tr>';
+                })
+                strhtml += '</table>';
+                $('#tbldis').html(strhtml);
+            }
+            $.ajax({
+                url: '/todo/GetTask',
+                method: 'POST',
+                data: udata,
+                success: function (data) {
+                    RenderData(data);
+                }
+            })
+        })
+        $('#lnkchng').click(function () {
+            window.location.href = '/todo/Login';
+        })
+    })
+</script>
